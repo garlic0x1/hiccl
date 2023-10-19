@@ -27,6 +27,6 @@
               (indent depth)
               tag
               (mapcar #'format-attr attrs)
-              (mapcar (lambda (child) (render child :out out :depth (+ 1 depth))) children)
+              (mapcar (lambda (child) (render child :depth (+ 1 depth))) children)
               (indent depth)
               tag))))
