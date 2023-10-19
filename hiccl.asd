@@ -3,11 +3,7 @@
   :version "0.1"
   :author "garlic0x1"
   :license "MIT"
-  :depends-on (
-               :alexandria
-               :serapeum
-               ;; :str
-               )
+  :depends-on (:serapeum)
   :components ((:module "src"
                 :components
                 ((:file "package")
