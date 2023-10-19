@@ -29,7 +29,7 @@ Spinneret is great but having to use macros to compose elements is less intuitiv
 : </a>
 : </div>
 
-* TODO
+* To do
 - JSX style class and ID in tag
   #+begin_src lisp
 (:div.class-name#id-name)
