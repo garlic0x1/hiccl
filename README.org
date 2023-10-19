@@ -58,7 +58,7 @@ Render to a stream by specifying the `:out` argument, renders to string by defau
 : </div>
 
 ** Validating tags
-This works, but it will emit a warning if *validate-tags?* is true
+This works, but it will emit a warning if `*validate-tags?*` is true
 #+begin_src lisp :exports both
 (hiccl:render '(:bad-tag "hi"))
 #+end_src
