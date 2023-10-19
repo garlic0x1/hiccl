@@ -15,18 +15,18 @@ Spinneret is great but having to use macros to compose elements is less intuitiv
     (:span "tag can be symbol")
     "no </\"xss\"> allowed"
     |symbols <are> "raw" </are>|
-    (a :href "lOOOool")))
+    (a :href "hTtPs://link.org" :link)))
 #+end_src
 
 #+RESULTS:
 : <div hi="world">
-: <span>
-: tag can be symbol
-: </span>
-: no &lt;/&quot;xss&quot;&gt; allowed
-: symbols <are> "raw" </are>
-: <a href="lOOOool">
-: </a>
+:   <span>
+:     tag can be symbol
+:   </span>
+:   no &lt;/&quot;xss&quot;&gt; allowed
+:   symbols <are> "raw" </are>
+:   <a href="hTtPs://link.org">
+:   </a>
 : </div>
 
 Render to a stream by specifying the `:out` argument, renders to string by default
