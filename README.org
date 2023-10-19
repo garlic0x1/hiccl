@@ -15,19 +15,22 @@ Spinneret is great but having to use macros to compose elements is less intuitiv
     (:span "tag can be symbol")
     "no </\"xss\"> allowed"
     |symbols <are> "raw" </are>|
-    (a :href "hTtPs://link.org" :link)))
+    (a :href "hTtPs://link.org" "clickme")))
 #+end_src
 
 #+RESULTS:
-: <div hi="world">
-:   <span>
-:     tag can be symbol
-:   </span>
-:   no &lt;/&quot;xss&quot;&gt; allowed
-:   symbols <are> "raw" </are>
-:   <a href="hTtPs://link.org">
-:   </a>
-: </div>
+#+begin_example
+<div hi="world">
+  <span>
+    tag can be symbol
+  </span>
+  no &lt;/&quot;xss&quot;&gt; allowed
+  symbols <are> "raw" </are>
+  <a href="hTtPs://link.org">
+    clickme
+  </a>
+</div>
+#+end_example
 
 Render to a stream by specifying the `:out` argument, renders to string by default
 #+begin_src lisp
@@ -36,10 +39,10 @@ Render to a stream by specifying the `:out` argument, renders to string by defau
 
 * To do
 - JSX style class and ID in tag
+
   #+begin_src lisp
 (:div.class-name#id-name)
 #+end_src
 - Emit warning if unknown tag or attribute
+
   this will have to be at runtime instead of compile-time like spinneret
-- Improve formatting
-  Indent nested nodes
