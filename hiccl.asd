@@ -3,9 +3,13 @@
   :version "0.1"
   :author "garlic0x1"
   :license "MIT"
-  :depends-on (:alexandria
+  :depends-on (
+               :alexandria
                :serapeum
-               :str)
-  :components ((:file "package")
-               (:file "sanitize")
-               (:file "render")))
+               ;; :str
+               )
+  :components ((:module "src"
+                :components
+                ((:file "package")
+                 (:file "sanitize")
+                 (:file "render")))))

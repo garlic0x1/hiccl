@@ -1,0 +1,30 @@
+#+title: Readme
+
+Hiccup HTML generator for Common Lisp
+
+* Purpose
+Spinneret is great but having to use macros to compose elements is less intuitive than simply having a function to render sexprs into html
+
+* Usage
+- Symbols are raw (you can write literal HTML between `|` symbols)
+- Strings are sanitized
+- Lists are HTML nodes
+#+begin_src lisp :exports both
+(render
+ `(div :hi "world"
+    (:span "tag can be symbol")
+    "no </\"xss\"> allowed"
+    |symbols <are> "raw" </are>|
+    (a :href "lOOOool")))
+#+end_src
+
+#+RESULTS:
+: <div hi="world">
+: <span>
+: tag can be symbol
+: </span>
+: no &lt;/&quot;xss&quot;&gt; allowed
+: symbols <are> "raw" </are>
+: <a href="lOOOool">
+: </a>
+: </div>
