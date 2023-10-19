@@ -29,6 +29,11 @@ Spinneret is great but having to use macros to compose elements is less intuitiv
 : </a>
 : </div>
 
+Render to a stream by specifying the `:out` argument, renders to string by default
+#+begin_src lisp
+(render sxml :out *standard-output*)
+#+end_src
+
 * To do
 - JSX style class and ID in tag
   #+begin_src lisp
