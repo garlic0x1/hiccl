@@ -9,6 +9,7 @@
 
 (defparameter *html5-elements*
     (keyword-set
+      :!-- :cdata :doctype :!doctype :comment :raw :tag
       :a :abbr :address :area :article :aside :audio :b :base :bdi :bdo :blockquote
       :body :br :button :canvas :caption :cite :code :col :colgroup :command :data
       :datalist :dd :del :details :dfn :dialog :div :dl :dt :em :embed :fieldset
