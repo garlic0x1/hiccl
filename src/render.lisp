@@ -1,33 +1,45 @@
 (in-package :hiccl)
 
-(defun indent (depth)
-  (format nil "~v@{~A~:*~}" depth "  "))
+(defgeneric apply-tag (tag body)
+  ;; Comment special tag
+  (:method ((tag (eql :comment)) body)
+    (format nil "<!--~%~{~a~%~}-->" body))
 
-(defun format-attr (attr)
-  (let ((k (car attr)) (v (cdr attr)))
-    (format nil "~(~a~)=\"~a\"" k v)))
+  ;; Alternative comment tag
+  (:method ((tag (eql :!--)) body)
+    (format nil "<!--~%~{~a~%~}-->" body))
 
-(defgeneric render (sxml &key &allow-other-keys)
-  (:method ((sxml symbol) &key out (depth 0))
-    (format out "~a~a"
-            (indent depth)
-            sxml))
+  ;; Doctype special tag
+  (:method ((tag (eql :doctype)) body)
+    (format nil "<!DOCTYPE~{ ~a~}>" body))
 
-  (:method ((sxml string) &key out (depth 0))
-    (format out "~a~a"
-            (indent depth)
-            (escape sxml #'escape-table)))
+  ;; Dummy tag (emits children in sequence)
+  (:method ((tag (eql :<>)) body)
+    (format nil "~{~a~^~%~}" (mapcar #'render body)))
 
-  (:method ((sxml list) &key out (depth 0))
-    (let* ((tag (validate-tag (car sxml)))
-           (attrs (loop :for (k v) :on (cdr sxml) :by 'cddr
-                        :while (keywordp k)
-                        :collect (cons k v)))
-           (children (nthcdr (+ 1 (* 2 (length attrs))) sxml)))
-      (format out "~a<~(~a~)~{ ~a~}>~{~%~a~}~%~a</~(~a~)>"
-              (indent depth)
-              tag
-              (mapcar #'format-attr attrs)
-              (mapcar (lambda (child) (render child :depth (+ 1 depth))) children)
-              (indent depth)
-              tag))))
+  ;; Raw string
+  (:method ((tag (eql :raw)) body)
+    (format nil "~{~a~^~%~}" body))
+
+  ;; Default strategy
+  (:method (tag body)
+    (multiple-value-bind (attrs children) (extract-attrs-and-children body)
+      (multiple-value-bind (tag attrs) (hiccl/expand::expand tag attrs)
+          (format nil "<~(~a~)~{ ~a~}>~%~{~a~%~}</~(~a~)>"
+                  tag
+                  (mapcar #'format-attr attrs)
+                  (mapcar #'render children)
+                  tag)))))
+
+(defgeneric render (sxml &key out)
+  ;; Render symbols raw
+  (:method ((sxml symbol) &key out)
+    (format out "~a" sxml))
+
+  ;; Render strings escaped
+  (:method ((sxml string) &key out)
+    (format out "~a" (escape sxml #'escape-table)))
+
+  ;; Render lists as XML nodes
+  (:method ((sxml list) &key out)
+    (format out "~a" (apply-tag (car sxml) (cdr sxml)))))
