@@ -1,4 +1,8 @@
-(in-package :hiccl)
+(defpackage #:hiccl/validate
+  (:use :cl)
+  (:import-from #:serapeum :set-hash-table)
+  (:export #:validate-tag))
+(in-package :hiccl/validate)
 
 (defmacro keyword-set (&body body)
     (assert (every #'keywordp body))

@@ -1,4 +1,8 @@
-(in-package :hiccl)
+(defpackage #:hiccl/render
+  (:use :cl)
+  (:nicknames #:hiccl)
+  (:export #:render))
+(in-package :hiccl/render)
 
 (defgeneric apply-tag (tag body)
   ;; Comment special tag
@@ -38,7 +42,7 @@
 
   ;; Render strings escaped
   (:method ((sxml string) &key out)
-    (format out "~a" (escape sxml #'escape-table)))
+    (format out "~a" (hiccl/sanitize:sanitize sxml)))
 
   ;; Render lists as XML nodes
   (:method ((sxml list) &key out)

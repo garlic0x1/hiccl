@@ -1,4 +1,8 @@
-(in-package :hiccl)
+(defpackage #:hiccl/sanitize
+  (:use :cl)
+  (:import-from #:serapeum :defconst)
+  (:export #:sanitize))
+(in-package :hiccl/sanitize)
 
 ;; extracted from spinneret:escape-string
 
@@ -14,3 +18,5 @@
     (#\> "&gt;")
     (#\" "&quot;")
     (#\' "&#39;")))
+
+(defun sanitize (str) (escape sxml #'escape-table))

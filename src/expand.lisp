@@ -1,7 +1,8 @@
-(defpackage :hiccl/expand
+(defpackage #:hiccl/expand
   (:use :cl :binding-arrows)
   (:import-from #:serapeum :split-sequence-if)
-  (:import-from #:trivia :match))
+  (:import-from #:trivia :match)
+  (:export #:expand))
 (in-package :hiccl/expand)
 
 (defun expand-tag (input &key tag class id (state :tag))

@@ -1,4 +1,7 @@
-(in-package :hiccl)
+(defpackage #:hiccl/utils
+  (:use :cl)
+  (:export #:format-attr #:extract-attrs-and-children))
+(in-package :hiccl/utils)
 
 (defun format-attr (attr)
   (let ((k (car attr)) (v (cdr attr))) (format nil "~(~a~)=\"~a\"" k v)))
