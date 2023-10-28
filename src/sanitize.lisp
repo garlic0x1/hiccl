@@ -1,6 +1,5 @@
 (defpackage #:hiccl/sanitize
-  (:use :cl)
-  (:import-from #:serapeum :defconst)
+  (:use :cl :serapeum)
   (:export #:sanitize))
 (in-package :hiccl/sanitize)
 
@@ -19,4 +18,4 @@
     (#\" "&quot;")
     (#\' "&#39;")))
 
-(defun sanitize (str) (escape sxml #'escape-table))
+(defun sanitize (str) (escape str #'escape-table))

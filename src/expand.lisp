@@ -50,7 +50,7 @@
     (ensure-has :id)))
 
 (defun expand (tag attrs)
-  (multiple-value-bind (tag class id) (expand-tag (coerce (string tag) 'list))
+  (multiple-value-bind (tag class id) (expand-tag (coerce (str:downcase (string tag)) 'list))
     (values tag (loop :for pair :in (prepare-attrs attrs)
                       :for k := (car pair)
                       :for v := (cdr pair)

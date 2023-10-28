@@ -27,11 +27,11 @@
 
   ;; Default strategy
   (:method (tag body)
-    (multiple-value-bind (attrs children) (extract-attrs-and-children body)
+    (multiple-value-bind (attrs children) (hiccl/utils:extract-attrs-and-children body)
       (multiple-value-bind (tag attrs) (hiccl/expand::expand tag attrs)
           (format nil "<~(~a~)~{ ~a~}>~%~{~a~%~}</~(~a~)>"
                   tag
-                  (mapcar #'format-attr attrs)
+                  (mapcar #'hiccl/utils:format-attr attrs)
                   (mapcar #'render children)
                   tag)))))
 
