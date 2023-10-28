@@ -1,7 +1,9 @@
 (defpackage #:hiccl/utils
   (:use :cl)
-  (:export #:format-attr #:extract-attrs-and-children))
+  (:export #:curry #:format-attr #:extract-attrs-and-children))
 (in-package :hiccl/utils)
+
+(defun curry (f x) (lambda (&rest args) (apply f (cons x args))))
 
 (defun format-attr (attr)
   (let ((k (car attr)) (v (cdr attr))) (format nil "~(~a~)=\"~a\"" k v)))

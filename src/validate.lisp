@@ -1,3 +1,7 @@
+;;
+;; Not really using this yet
+;;
+
 (defpackage #:hiccl/validate
   (:use :cl)
   (:import-from #:serapeum :set-hash-table)

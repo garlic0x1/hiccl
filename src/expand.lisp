@@ -44,14 +44,14 @@
 (defun ensure-has (alist key)
   (if (assoc key alist) alist (cons (cons key nil) alist)))
 
-(defun prepare-attrs (attrs)
-  (-> attrs
-    (ensure-has :class)
-    (ensure-has :id)))
+(defun prepare-attrs (attrs class id)
+  (cond-> attrs
+    (class (ensure-has :class))
+    (id (ensure-has :id))))
 
 (defun expand (tag attrs)
   (multiple-value-bind (tag class id) (expand-tag (coerce (str:downcase (string tag)) 'list))
-    (values tag (loop :for pair :in (prepare-attrs attrs)
+    (values tag (loop :for pair :in (prepare-attrs attrs class id)
                       :for k := (car pair)
                       :for v := (cdr pair)
                       :for nv := (match k

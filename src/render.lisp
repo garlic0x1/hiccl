@@ -1,49 +1,78 @@
 (defpackage #:hiccl/render
-  (:use :cl)
   (:nicknames #:hiccl)
+  (:use :cl :hiccl/utils)
   (:export #:render))
 (in-package :hiccl/render)
 
-(defgeneric apply-tag (tag body)
+;;
+;; Handle SXML nodes by tag
+;;
+
+(defgeneric apply-tag (out tag body)
   ;; Comment special tag
-  (:method ((tag (eql :comment)) body)
-    (format nil "<!--~%~{~a~%~}-->" body))
+  (:method (out (tag (eql :comment)) body)
+    (format out "<!--~%~{~a~%~}-->" body))
 
   ;; Alternative comment tag
-  (:method ((tag (eql :!--)) body)
-    (format nil "<!--~%~{~a~%~}-->" body))
+  (:method (out (tag (eql :!--)) body)
+    (format out "<!--~%~{~a~%~}-->" body))
 
   ;; Doctype special tag
-  (:method ((tag (eql :doctype)) body)
-    (format nil "<!DOCTYPE~{ ~a~}>" body))
+  (:method (out (tag (eql :doctype)) body)
+    (format out "<!DOCTYPE~{ ~a~}>" body))
 
   ;; Dummy tag (emits children in sequence)
-  (:method ((tag (eql :<>)) body)
-    (format nil "~{~a~^~%~}" (mapcar #'render body)))
+  (:method (out (tag (eql :<>)) body)
+    (format out "~{~a~^~%~}" (mapcar (curry #'render-form out) body)))
 
   ;; Raw string
-  (:method ((tag (eql :raw)) body)
-    (format nil "~{~a~^~%~}" body))
+  (:method (out (tag (eql :raw)) body)
+    (format out "~{~a~^~%~}" body))
 
   ;; Default strategy
-  (:method (tag body)
-    (multiple-value-bind (attrs children) (hiccl/utils:extract-attrs-and-children body)
+  (:method (out tag body)
+    (multiple-value-bind (attrs children) (extract-attrs-and-children body)
       (multiple-value-bind (tag attrs) (hiccl/expand::expand tag attrs)
-          (format nil "<~(~a~)~{ ~a~}>~%~{~a~%~}</~(~a~)>"
-                  tag
-                  (mapcar #'hiccl/utils:format-attr attrs)
-                  (mapcar #'render children)
-                  tag)))))
+        (format out "<~(~a~)~{ ~a~}>" tag (mapcar #'format-attr attrs))
+        (dolist (c children) (render-form out c))
+        (format out "</~(~a~)>" tag)))))
 
-(defgeneric render (sxml &key out)
+;;
+;; Render one SXML form to output
+;;
+
+(defgeneric render-form (out sxml)
   ;; Render symbols raw
-  (:method ((sxml symbol) &key out)
+  (:method (out (sxml symbol))
+    (format out "~a" sxml))
+
+  ;; Render numbers literally
+  (:method (out (sxml number))
     (format out "~a" sxml))
 
   ;; Render strings escaped
-  (:method ((sxml string) &key out)
+  (:method (out (sxml string))
     (format out "~a" (hiccl/sanitize:sanitize sxml)))
 
   ;; Render lists as XML nodes
-  (:method ((sxml list) &key out)
-    (format out "~a" (apply-tag (car sxml) (cdr sxml)))))
+  (:method (out (sxml list))
+    (apply-tag out (car sxml) (cdr sxml))))
+
+;;
+;; This is the primary exposed function
+;; Example:
+;;   (hiccl:render t '(:div.hi :class "world" "<3"))
+;;
+;; Output:
+;;   <div id="" class="world hi">
+;;   &lt;3
+;;   </div>
+;;
+
+(defun render* (output &rest forms)
+  (if output
+      (dolist (f forms) (render-form output f))
+      (with-output-to-string (capture) (apply (curry #'render* capture) forms))))
+
+(defmacro render (output &body forms)
+  `(render* ,output ,@forms))
