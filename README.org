@@ -20,13 +20,13 @@ Spinneret is great but having to use macros to compose elements is less intuitiv
 
 #+RESULTS:
 #+begin_example
-<div hi="NIL">
+<div hi="world">
 <span>
 tag can be symbol
 </span>
 no &lt;/&quot;xss&quot;&gt; allowed
 symbols <are> "raw" </are>
-<a href="NIL">
+<a href="hTtPs://link.org">
 clickme
 </a>
 </div>
@@ -35,7 +35,7 @@ clickme
 ** Specifying output
 Render to a stream by specifying the `:out` argument, renders to string by default
 #+begin_src lisp
-(hiccl:render sxml :out *standard-output*)
+(hiccl:render *standard-output* sxml)
 #+end_src
 
 ** Composing components
@@ -43,7 +43,7 @@ Render to a stream by specifying the `:out` argument, renders to string by defau
 (defun hello-component (name)
   `(:span ,(format nil "Hello ~a" name)))
 
-(hiccl:render
+(hiccl:render nil
  `(:div
    "hello-component:"
    ,(hello-component "garlic")))
@@ -51,21 +51,21 @@ Render to a stream by specifying the `:out` argument, renders to string by defau
 
 #+RESULTS:
 : <div>
-:   hello-component:
-:   <span>
-:     Hello garlic
-:   </span>
+: hello-component:
+: <span>
+: Hello garlic
+: </span>
 : </div>
 
 ** Validating tags
 This works, but it will emit a warning if `*validate-tags?*` is true
 #+begin_src lisp :exports both
-(hiccl:render '(:bad-tag "hi"))
+(hiccl:render nil '(:bad-tag "hi"))
 #+end_src
 
 #+RESULTS:
 : <bad-tag>
-:   hi
+: hi
 : </bad-tag>
 
 #+begin_src
@@ -74,6 +74,7 @@ WARNING: Invalid tag BAD-TAG
 
 * To do
 - JSX style class and ID in tag
+  DONE
   #+begin_src lisp
 (:div.class-name#id-name)
 #+end_src
