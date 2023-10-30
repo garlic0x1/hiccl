@@ -18,4 +18,10 @@
         (macro-attrs (parse (render nil '(:div.class1.class2#id1.class3 :id "id2" "text")))))
     (is (equal "world" (elt ($ basic-attrs "div" (attr :hi)) 0)))
     (is (equal "class1 class2 class3" (elt ($ macro-attrs "div" (attr :class)) 0)))
-    (is (string= "id2 id1" (elt ($ macro-attrs "div" (attr :id)) 0)))))
+    (is (equal "id2 id1" (elt ($ macro-attrs "div" (attr :id)) 0)))))
+
+(test :testing
+  (let* ((sxml '(:div (:1 (:2 "a") (:2 "b")) (:1 "c")))
+         (node (parse (render nil sxml))))
+    (is (= 1 (length (plump:child-elements node))))
+    (is (= 2 (length (plump:child-elements (elt ($ node "1") 0)))))))

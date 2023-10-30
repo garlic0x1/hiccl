@@ -38,8 +38,7 @@
                            :class class
                            :id (concatenate 'string id (string char))
                            :state :id)))
-      (values tag class id ;; `((:class ,class) (:id ,id))
-              )))
+      (values tag class id)))
 
 (defun ensure-has (alist key)
   (if (assoc key alist) alist (cons (cons key nil) alist)))
