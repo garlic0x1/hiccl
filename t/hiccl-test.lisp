@@ -36,11 +36,22 @@
   (let* ((sxml '(:div (:1 (:2 "a") (:2 "b")) (:1 "c")))
          (node (parse (render nil sxml))))
     (is (= 1 (length (plump:child-elements node))))
-    (is (= 2 (length (plump:child-elements (elt ($ node "1") 0)))))))
+    (is (= 2 (length (plump:child-elements (elt ($ node "1") 0)))))
+    (is (= 1 (length (plump:children (elt ($ node "1") 1)))))))
+
+;;
+;; Ensure at least some level of sanitization happens with strings
+;;
 
 (test :sanitization
   (is (equal
        "<div>
 &lt;&gt;
 </div>
-" (plump:serialize (parse (render nil '(:div "<>"))) nil))))
+" (plump:serialize (parse (render nil '(:div "<>"))) nil)))
+
+  (is (equal
+       "<div>
+'&quot;
+</div>
+" (plump:serialize (parse (render nil '(:div "'\""))) nil))))
