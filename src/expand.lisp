@@ -51,11 +51,13 @@
 
 (defun expand (tag attrs)
   (multiple-value-bind (tag class id) (expand-tag (coerce (str:downcase (string tag)) 'list))
-    (values tag (loop :for pair :in (prepare-attrs attrs class id)
-                      :for k := (car pair)
-                      :for v := (cdr pair)
-                      :for nv := (match k
-                                   (:class (str:trim (concatenate 'string v class)))
-                                   (:id (str:trim (concatenate 'string v id)))
-                                   (t v))
-                      :collect (cons k nv)))))
+    (values tag
+            (loop :for pair :in (prepare-attrs attrs class id)
+                  :for k := (car pair)
+                  :for v := (cdr pair)
+                  :for nv := (match k
+                               (:class (str:trim (concatenate 'string v class)))
+                               (:id (str:trim (concatenate 'string v id)))
+                               (otherwise v))
+                  ;; :do (format t "k: ~W v: ~W nv: ~W~%" k v nv)
+                  :collect (cons k nv)))))

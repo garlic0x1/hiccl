@@ -10,7 +10,7 @@ Spinneret is great but having to use macros to compose elements is less intuitiv
 - Strings are sanitized
 - Lists are HTML nodes
 #+begin_src lisp :exports both
-(hiccl:render
+(hiccl:render nil
  `(:div :hi "world"
     (:span "tag can be symbol")
     "no </\"xss\"> allowed"
@@ -20,15 +20,15 @@ Spinneret is great but having to use macros to compose elements is less intuitiv
 
 #+RESULTS:
 #+begin_example
-<div hi="world">
-  <span>
-    tag can be symbol
-  </span>
-  no &lt;/&quot;xss&quot;&gt; allowed
-  symbols <are> "raw" </are>
-  <a href="hTtPs://link.org">
-    clickme
-  </a>
+<div hi="NIL">
+<span>
+tag can be symbol
+</span>
+no &lt;/&quot;xss&quot;&gt; allowed
+symbols <are> "raw" </are>
+<a href="NIL">
+clickme
+</a>
 </div>
 #+end_example
 
