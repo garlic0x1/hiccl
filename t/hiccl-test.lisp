@@ -9,9 +9,17 @@
   :description "Tests for Hiccl")
 (in-suite :hiccl)
 
+;;
+;; Ensure we are at least generating valid HTML
+;;
+
 (test :basic
   (is (node-p (parse (render nil '(:hi :world "al<>" (:div "lol"))))))
   (is (node-p (parse (render nil '(:hi (:<> (:lol |lol|))))))))
+
+;;
+;; Ensure attributes and JSX shorthand work
+;;
 
 (test :attributes
   (let ((basic-attrs (parse (render nil '(:div :hi "world"))))
@@ -20,8 +28,19 @@
     (is (equal "class1 class2 class3" (elt ($ macro-attrs "div" (attr :class)) 0)))
     (is (equal "id2 id1" (elt ($ macro-attrs "div" (attr :id)) 0)))))
 
-(test :testing
+;;
+;; Ensure nested nodes work
+;;
+
+(test :nesting
   (let* ((sxml '(:div (:1 (:2 "a") (:2 "b")) (:1 "c")))
          (node (parse (render nil sxml))))
     (is (= 1 (length (plump:child-elements node))))
     (is (= 2 (length (plump:child-elements (elt ($ node "1") 0)))))))
+
+(test :sanitization
+  (is (equal
+       "<div>
+&lt;&gt;
+</div>
+" (plump:serialize (parse (render nil '(:div "<>"))) nil))))
