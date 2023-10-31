@@ -7,14 +7,15 @@
 
 ;;
 ;; Render XML attributes
+;; If value is nil, the attribute is treated as boolean
 ;;
 
 (defun render-attr (attr)
   (let ((k (car attr))
         (v (cdr attr)))
     (if v
-        (format nil "~(~a~)=\"~a\"" (sanitize (string k)) (sanitize v))
-        (format nil "~(~a~)" (sanitize (string k))))))
+        (format nil "~(~a~)=\"~a\"" (sanitize k) (sanitize v))
+        (format nil "~(~a~)" (sanitize k)))))
 
 ;;
 ;; Handle SXML nodes by tag

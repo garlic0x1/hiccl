@@ -49,7 +49,7 @@ hi
     (is (= 1 (length (children (elt ($ node "1") 1)))))))
 
 ;;
-;; Ensure at least some level of sanitization happens with strings
+;; Ensure at least some level of sanitization happens
 ;;
 
 (test :sanitization
@@ -63,7 +63,16 @@ hi
        "<div>
 '&quot;
 </div>
-" (serialize (parse (render nil '(:div "'\""))) nil))))
+" (serialize (parse (render nil '(:div "'\""))) nil)))
+
+  (is (equal
+       "<div at&lt;&gt;r=\"&lt;&gt;\">
+'&quot;
+</div>
+"
+       (serialize (parse (render nil '(:div :at<>r "<>" "'\""))) nil)))
+
+  )
 
 
 ;;
