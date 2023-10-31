@@ -5,9 +5,9 @@
   :license "MIT"
   :depends-on (:serapeum :binding-arrows :trivia :str)
   :components ((:module "src"
-                :components ((:file "utils")
-                             (:file "expand")
-                             (:file "validate")
-                             (:file "sanitize")
-                             (:file "render")))))
-
+                :components
+                ((:file "utils")
+                 (:file "expand")
+                 (:file "validate")
+                 (:file "sanitize")
+                 (:file "render")))))

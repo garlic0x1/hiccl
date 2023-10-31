@@ -18,4 +18,10 @@
     (#\" "&quot;")
     (#\' "&#39;")))
 
-(defun sanitize (str) (escape str #'escape-table))
+(defgeneric sanitize (obj)
+
+  (:method ((obj string))
+    (escape obj #'escape-table))
+
+  (:method ((obj symbol))
+    (sanitize (string obj))))

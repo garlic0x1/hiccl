@@ -3,4 +3,7 @@
 *.log
 tmp/
 
+# SBCL
 *.fasl
+# Clozure
+*.lx64fsl

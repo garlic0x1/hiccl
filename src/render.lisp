@@ -1,8 +1,20 @@
 (defpackage #:hiccl/render
   (:nicknames #:hiccl)
   (:use :cl :hiccl/utils)
+  (:import-from #:hiccl/sanitize #:sanitize)
   (:export #:render #:render-forms))
 (in-package :hiccl/render)
+
+;;
+;; Render XML attributes
+;;
+
+(defun render-attr (attr)
+  (let ((k (car attr))
+        (v (cdr attr)))
+    (if v
+        (format nil "~(~a~)=\"~a\"" (sanitize (string k)) (sanitize v))
+        (format nil "~(~a~)" (sanitize (string k))))))
 
 ;;
 ;; Handle SXML nodes by tag
@@ -23,9 +35,7 @@
 
   ;; Dummy tag (emits children in sequence)
   (:method (out (tag (eql :<>)) body)
-    (dolist (c body) (render-form out c))
-    ;; (format out "~{~a~^~%~}" (mapcar (curry #'render-form out) body))
-    )
+    (dolist (c body) (render-form out c)))
 
   ;; Raw string
   (:method (out (tag (eql :raw)) body)
@@ -35,7 +45,7 @@
   (:method (out tag body)
     (multiple-value-bind (attrs children) (extract-attrs-and-children body)
       (multiple-value-bind (tag attrs) (hiccl/expand::expand tag attrs)
-        (format out "<~(~a~)~{ ~a~}>~%" tag (mapcar #'format-attr attrs))
+        (format out "<~(~a~)~{ ~a~}>~%" tag (mapcar #'render-attr attrs))
         (dolist (c children) (render-form out c))
         (format out "</~(~a~)>~%" tag)))))
 
