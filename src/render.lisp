@@ -10,12 +10,12 @@
 ;; If value is nil, the attribute is treated as boolean
 ;;
 
-(defun render-attr (attr)
+(defun render-attr (out attr)
   (let ((k (car attr))
         (v (cdr attr)))
     (if v
-        (format nil "~(~a~)=\"~a\"" (sanitize k) (sanitize v))
-        (format nil "~(~a~)" (sanitize k)))))
+        (format out " ~(~a~)=\"~a\"" (sanitize k) (sanitize v))
+        (format out " ~(~a~)" (sanitize k)))))
 
 ;;
 ;; Handle SXML nodes by tag
@@ -46,7 +46,10 @@
   (:method (out tag body)
     (multiple-value-bind (attrs children) (extract-attrs-and-children body)
       (multiple-value-bind (tag attrs) (hiccl/expand::expand tag attrs)
-        (format out "<~(~a~)~{ ~a~}>~%" tag (mapcar #'render-attr attrs))
+        (format out "<~(~a~)" tag)
+        (dolist (a attrs) (render-attr out a))
+        (format out ">~%")
+        ;; (format out "<~(~a~)~{ ~a~}>~%" tag (mapcar #'render-attr attrs))
         (dolist (c children) (render-form out c))
         (format out "</~(~a~)>~%" tag)))))
 
