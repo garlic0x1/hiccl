@@ -57,43 +57,39 @@ hi
        "<div>
 &lt;&gt;
 </div>
-" (serialize (parse (render nil '(:div "<>"))) nil)))
+"
+       (render nil '(:div "<>"))))
 
   (is (equal
        "<div>
-'&quot;
+&#39;&quot;
 </div>
-" (serialize (parse (render nil '(:div "'\""))) nil)))
+"
+       (render nil '(:div "'\""))))
 
   (is (equal
        "<div at&lt;&gt;r=\"&lt;&gt;\">
-'&quot;
+&#39;&quot;
 </div>
 "
-       (serialize (parse (render nil '(:div :at<>r "<>" "'\""))) nil)))
+       (render nil '(:div :at<>r "<>" "'\"")))))
 
-  )
+(defstruct user username email)
+(defmethod hiccl::render-form (out (obj user))
+  (hiccl:render out
+    `(:div.user
+      (:div.username ,(user-username obj))
+      (:div.email ,(user-email obj)))))
 
-
-;;
-;; string comparison is fucked, probably some weird whitespace, still werks tho
-;;
-
-;; (test :components
-;;   (let* ((c1 (lambda (name) `(:span.inner "Hello, " ,name)))
-;;          (c2 (lambda (inner) `(:div.outer ,(funcall inner "world"))))
-;;          (out (render nil (funcall c2 c1)))
-;;          ;; (node (parse out))
-;;          )
-
-;;     (format t "~%Out:~% ~W~%~%Done~%" out)
-
-;;     (is (string-equal out
-;;  "<div class=\"outer\">
-;; <span class=\"inner\">
-;; Hello,
-;; world
-;; </span>
-;; </div>
-;; "
-;;                  ))))
+(test :extension
+  (is (equal
+       "<div class=\"user\">
+<div class=\"username\">
+garlic
+</div>
+<div class=\"email\">
+garlic@email.com
+</div>
+</div>
+"
+       (render nil (make-user :username "garlic" :email "garlic@email.com")))))

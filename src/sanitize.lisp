@@ -19,9 +19,5 @@
     (#\' "&#39;")))
 
 (defgeneric sanitize (obj)
-
-  (:method ((obj string))
-    (escape obj #'escape-table))
-
-  (:method ((obj symbol))
-    (sanitize (string obj))))
+  (:method ((obj string)) (escape obj #'escape-table))
+  (:method ((obj symbol)) (sanitize (string obj))))

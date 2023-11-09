@@ -1,9 +1,9 @@
 (defpackage #:hiccl/utils
   (:use :cl)
-  (:export #:curry #:format-attr #:extract-attrs-and-children))
+  (:export #:curry #:extract-attrs-and-children))
 (in-package :hiccl/utils)
 
-(defun curry (f x) (lambda (&rest args) (apply f (cons x args))))
+(defun curry (f &rest a) (lambda (&rest b) (apply f (nconc a b))))
 
 (defun extract-attrs-and-children (body)
   (let* ((attrs (loop :for (k v) :on body :by 'cddr

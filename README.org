@@ -3,10 +3,11 @@
 Hiccup HTML generator for Common Lisp
 
 * Purpose
-Spinneret is great but having to use macros to compose elements is less intuitive than simply having a function to render sexprs into html
+Spinneret is great but having to use macros to compose elements is less intuitive than simply having a function to render S-Expressions into HTML.
+
+Hiccl also aims to be easy to extend with generic functions.
 
 * Usage
-
 Hiccl exposes one function, `render-forms` and a macro `render` which is simply to use &body args for nicer editor support, they take an output argument (same as format) and any number of SXML expressions
 
 - Symbols are raw (you can write literal HTML between `|` symbols)
@@ -78,25 +79,54 @@ Render to a stream by specifying the `:out` argument, renders to string by defau
 : </span>
 : </div>
 
-** Validating tags
-(disabled rn)
-This works, but it will emit a warning if `*validate-tags?*` is true
+** Boolean attributes
+To use boolean attributes, just make its value nil:
 #+begin_src lisp :exports both
-(hiccl:render nil '(:bad-tag "hi"))
+(hiccl:render nil '(:div :bool nil))
 #+end_src
 
 #+RESULTS:
-: <bad-tag>
-: hi
-: </bad-tag>
+: <div bool>
+: </div>
 
-#+begin_src
-WARNING: Invalid tag BAD-TAG
+** Extending the renderer
+The renderer uses generic functions that you can extend to handle your objects:
+#+begin_src lisp :exports both
+(defclass thing ()
+  ((a :initarg :a :accessor thing-a)
+   (b :initarg :b :accessor thing-b)))
+
+(defmethod hiccl::render-form (out (obj thing))
+  (hiccl:render out
+    `(:div.thing
+      (:div.a ,(thing-a obj))
+      (:div.b ,(thing-b obj)))))
+
+(hiccl:render nil (make-instance 'thing :a "hi" :b "world"))
 #+end_src
 
-* To do
-- Handle boolean attrs properly
-- Emit warning on unknown attributes/tags
+#+RESULTS:
+: <div class="thing">
+: <div class="a">
+: hi
+: </div>
+: <div class="b">
+: world
+: </div>
+: </div>
 
-  Not sure if I really want to do this, since it would have to happen at runtime
-- Add pretty indenting
+You can also add special cases for HTML tags with methods:
+#+begin_src lisp :exports both
+(defmethod hiccl::apply-tag (out (tag (eql :my-comment)) body)
+  (format out "<!--~%SPECIAL COMMENT~%~{~a~%~}-->" body))
+
+(hiccl:render nil '(:my-comment "hi"))
+#+end_src
+
+#+RESULTS:
+: <!--
+: SPECIAL COMMENT
+: hi
+: -->
+
+These are not exported, so remember to use hiccl::* to refer to them
