@@ -58,6 +58,9 @@
 ;;
 
 (defgeneric render-form (out sxml)
+  ;; Dont render nil
+  (:method (out (sxml null)) nil)
+
   ;; Render symbols raw
   (:method (out (sxml symbol))
     (format out "~a~%" sxml))
