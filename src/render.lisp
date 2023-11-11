@@ -10,6 +10,7 @@
 ;; If value is nil, the attribute is treated as boolean
 ;;
 
+;; ----------------------------------------------------------------------------
 (defun render-attr (out attr)
   (let ((k (car attr))
         (v (cdr attr)))
@@ -21,6 +22,7 @@
 ;; Handle SXML nodes by tag
 ;;
 
+;; ----------------------------------------------------------------------------
 (defgeneric apply-tag (out tag body)
   ;; Comment special tag
   (:method (out (tag (eql :comment)) body)
@@ -57,6 +59,7 @@
 ;; Render one SXML form to output
 ;;
 
+;; ----------------------------------------------------------------------------
 (defgeneric render-form (out sxml)
   ;; Dont render nil
   (:method (out (sxml null)) nil)
@@ -77,6 +80,7 @@
   (:method (out (sxml list))
     (apply-tag out (car sxml) (cdr sxml))))
 
+;; ----------------------------------------------------------------------------
 (defun render-forms (output &rest forms)
   (if output
       (dolist (f forms) (render-form output f))
@@ -96,5 +100,6 @@
 ;;   </div>
 ;;
 
+;; ----------------------------------------------------------------------------
 (defmacro render (output &body forms)
   `(render-forms ,output ,@forms))

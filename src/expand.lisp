@@ -5,6 +5,12 @@
   (:export #:expand))
 (in-package :hiccl/expand)
 
+;;
+;; This package deals with "expanding" jsx-style id and class values
+;; Any other special syntax definitions should be handled here
+;;
+
+;; ----------------------------------------------------------------------------
 (defun expand-tag (input &key tag class id (state :tag))
   (if input
       (match (cons (car input) state)
@@ -27,27 +33,30 @@
                            :id id
                            :state :tag))
         ((cons char :class) (expand-tag
-                           (cdr input)
-                           :tag tag
-                           :class (concatenate 'string class (string char))
-                           :id id
-                           :state :class))
+                             (cdr input)
+                             :tag tag
+                             :class (concatenate 'string class (string char))
+                             :id id
+                             :state :class))
         ((cons char :id) (expand-tag
-                           (cdr input)
-                           :tag tag
-                           :class class
-                           :id (concatenate 'string id (string char))
-                           :state :id)))
+                          (cdr input)
+                          :tag tag
+                          :class class
+                          :id (concatenate 'string id (string char))
+                          :state :id)))
       (values tag class id)))
 
+;; ----------------------------------------------------------------------------
 (defun ensure-has (alist key)
   (if (assoc key alist) alist (cons (cons key nil) alist)))
 
+;; ----------------------------------------------------------------------------
 (defun prepare-attrs (attrs class id)
   (cond-> attrs
     (class (ensure-has :class))
     (id (ensure-has :id))))
 
+;; ----------------------------------------------------------------------------
 (defun expand (tag attrs)
   (multiple-value-bind (tag class id) (expand-tag (coerce (str:downcase (string tag)) 'list))
     (values tag
