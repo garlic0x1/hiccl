@@ -14,36 +14,36 @@
 (defun expand-tag (input &key tag class id (state :tag))
   (if input
       (match (cons (car input) state)
-        ((cons #\# _state) (expand-tag
-                            (cdr input)
-                            :tag tag
-                            :class class
-                            :id (concatenate 'string id " ")
-                            :state :id))
-        ((cons #\. _state) (expand-tag
-                            (cdr input)
-                            :tag tag
-                            :class (concatenate 'string class " ")
-                            :id id
-                            :state :class))
-        ((cons char :tag) (expand-tag
-                           (cdr input)
-                           :tag (concatenate 'string tag (string char))
-                           :class class
-                           :id id
-                           :state :tag))
-        ((cons char :class) (expand-tag
-                             (cdr input)
-                             :tag tag
-                             :class (concatenate 'string class (string char))
-                             :id id
-                             :state :class))
-        ((cons char :id) (expand-tag
-                          (cdr input)
-                          :tag tag
-                          :class class
-                          :id (concatenate 'string id (string char))
-                          :state :id)))
+        ((cons #\# _state)
+         (expand-tag (cdr input)
+                     :tag tag
+                     :class class
+                     :id (concatenate 'string id " ")
+                     :state :id))
+        ((cons #\. _state)
+         (expand-tag (cdr input)
+                     :tag tag
+                     :class (concatenate 'string class " ")
+                     :id id
+                     :state :class))
+        ((cons char :tag)
+         (expand-tag (cdr input)
+                     :tag (concatenate 'string tag (string char))
+                     :class class
+                     :id id
+                     :state :tag))
+        ((cons char :class)
+         (expand-tag (cdr input)
+                     :tag tag
+                     :class (concatenate 'string class (string char))
+                     :id id
+                     :state :class))
+        ((cons char :id)
+         (expand-tag (cdr input)
+                     :tag tag
+                     :class class
+                     :id (concatenate 'string id (string char))
+                     :state :id)))
       (values tag class id)))
 
 ;; ----------------------------------------------------------------------------
@@ -67,5 +67,4 @@
                                (:class (str:trim (concatenate 'string v class)))
                                (:id (str:trim (concatenate 'string v id)))
                                (otherwise v))
-                  ;; :do (format t "k: ~W v: ~W nv: ~W~%" k v nv)
                   :collect (cons k nv)))))

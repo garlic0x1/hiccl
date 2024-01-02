@@ -3,5 +3,4 @@
   :license "MIT"
   :depends-on (:alexandria :fiveam :plump :lquery :hiccl)
   :components ((:module "t"
-                :components
-                ((:file "hiccl-test")))))
+                :components ((:file "hiccl-test")))))
