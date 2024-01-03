@@ -8,4 +8,5 @@
                 :components ((:file "utils")
                              (:file "expand")
                              (:file "sanitize")
+                             (:file "tags")
                              (:file "render")))))

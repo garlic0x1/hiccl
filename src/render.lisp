@@ -5,18 +5,28 @@
   (:export #:render #:render-forms))
 (in-package :hiccl/render)
 
-;;
-;; Render XML attributes
-;; If value is nil, the attribute is treated as boolean
-;;
-
 ;; ----------------------------------------------------------------------------
 (defun render-attr (out attr)
-  (let ((k (car attr))
-        (v (cdr attr)))
+  (let ((k (car attr)) (v (cdr attr)))
     (if v
         (format out " ~(~a~)=\"~a\"" (sanitize k) (sanitize v))
         (format out " ~(~a~)" (sanitize k)))))
+
+;; ----------------------------------------------------------------------------
+(defun render-inline-tag (out tag attrs children)
+  (format out "<~(~a~)" tag)
+  (dolist (a attrs) (render-attr out a))
+  (format out ">~%")
+  (dolist (c children) (render-form out c))
+  (format out "</~(~a~)>" tag))
+
+;; ----------------------------------------------------------------------------
+(defun render-block-tag (out tag attrs children)
+  (format out "<~(~a~)" tag)
+  (dolist (a attrs) (render-attr out a))
+  (format out ">~%")
+  (dolist (c children) (render-form out c))
+  (format out "</~(~a~)>~%" tag))
 
 ;;
 ;; Handle SXML nodes by tag
@@ -26,11 +36,11 @@
 (defgeneric apply-tag (out tag body)
   ;; Comment special tag
   (:method (out (tag (eql :comment)) body)
-    (format out "<!--~%~{~a~%~}-->" body))
+    (format out "<!-- ~{~a~} -->" body))
 
   ;; Alternative comment tag
   (:method (out (tag (eql :!--)) body)
-    (format out "<!--~%~{~a~%~}-->" body))
+    (format out "<!-- ~{~a~} -->" body))
 
   ;; Doctype special tag
   (:method (out (tag (eql :doctype)) body)
@@ -47,12 +57,10 @@
   ;; Default strategy
   (:method (out tag body)
     (multiple-value-bind (attrs children) (extract-attrs-and-children body)
-      (multiple-value-bind (tag attrs) (hiccl/expand::expand tag attrs)
-        (format out "<~(~a~)" tag)
-        (dolist (a attrs) (render-attr out a))
-        (format out ">")
-        (dolist (c children) (render-form out c))
-        (format out "</~(~a~)>" tag)))))
+      (multiple-value-bind (tag attrs) (hiccl/expand:expand tag attrs)
+        (if (hiccl/tags:inline? tag)
+            (render-inline-tag out tag attrs children)
+            (render-block-tag out tag attrs children))))))
 
 ;;
 ;; Render one SXML form to output
