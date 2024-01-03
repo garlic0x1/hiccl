@@ -12,8 +12,7 @@
 
 ;; ----------------------------------------------------------------------------
 (defun render-attr (out attr)
-  (let ((k (car attr))
-        (v (cdr attr)))
+  (let ((k (car attr)) (v (cdr attr)))
     (if v
         (format out " ~(~a~)=\"~a\"" (sanitize k) (sanitize v))
         (format out " ~(~a~)" (sanitize k)))))
