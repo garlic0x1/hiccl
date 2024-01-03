@@ -25,11 +25,11 @@
 (defgeneric apply-tag (out tag body)
   ;; Comment special tag
   (:method (out (tag (eql :comment)) body)
-    (format out "<!--~%~{~a~%~}-->" body))
+    (format out "<!-- ~{~a~} -->" body))
 
   ;; Alternative comment tag
   (:method (out (tag (eql :!--)) body)
-    (format out "<!--~%~{~a~%~}-->" body))
+    (format out "<!-- ~{~a~} -->" body))
 
   ;; Doctype special tag
   (:method (out (tag (eql :doctype)) body)

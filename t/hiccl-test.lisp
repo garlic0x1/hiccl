@@ -72,10 +72,33 @@
 (test :extension
   (is (equal
        "<div class=\"user\"><div class=\"username\">garlic</div><div class=\"email\">garlic@email.com</div></div>"
-       (render nil (make-user :username "garlic" :email "garlic@email.com")))))
+       (render nil (make-user :username "garlic" :email "garlic@email.com"))))
+
+  (is (equal
+       "<!-- hi -->"
+       (render nil '(:!-- "hi"))))
+
+  (is (equal
+       "<!-- hi -->"
+       (render nil '(:comment "hi")))))
 
 ;; ----------------------------------------------------------------------------
 (test :whitespace
   (is (equal
        "<div>hi world</div>"
-       (render nil `(:div "hi" " " "world")))))
+       (render nil '(:div "hi" " " "world")))))
+
+;; ----------------------------------------------------------------------------
+(test :raw
+  (is (equal
+       "<div>hi</lol>"
+       (render nil '(:raw "<div>hi</lol>"))))
+
+  (is (equal
+       "<div>hi</lol>"
+       (render nil '|<div>hi</lol>|)))
+
+  ;; reader capitalizes the keyword
+  (is (not (equal
+            "<div>hi</lol>"
+            (render nil :<div>hi</lol>)))))
