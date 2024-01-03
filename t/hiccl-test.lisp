@@ -102,3 +102,35 @@
   (is (not (equal
             "<div>hi</lol>"
             (render nil :<div>hi</lol>)))))
+
+;;
+;; AI generated tests below
+;;
+
+;; ----------------------------------------------------------------------------
+(test :empty-tag
+  (is (equal
+       "<img src=\"image.jpg\" alt=\"\"></img>"
+       (render nil '(:img :src "image.jpg" :alt "")))))
+
+;; ----------------------------------------------------------------------------
+(test :conditional-rendering
+  (is (equal
+       "<div></div>"
+       (render nil `(:div ,(when nil "lol")))))
+
+  (is (equal
+       "<div>hi</div>"
+       (render nil `(:div ,(when t "hi")))))
+
+  (is (equal
+       "<div>hi</div>"
+       (render nil `(:div ,(if t "hi" "bye"))))))
+
+;; ----------------------------------------------------------------------------
+(test :html5-doctype
+  (is (equal
+       "<!DOCTYPE html><h1>Hello, World!</h1>"
+       (render nil '(:<>
+                     (:doctype "html")
+                     (:h1 "Hello, World!"))))))
