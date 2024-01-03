@@ -2,7 +2,6 @@
   (:nicknames #:hiccl)
   (:use :cl :hiccl/utils)
   (:import-from #:hiccl/sanitize #:sanitize)
-  (:import-from #:trivia #:match)
   (:export #:render #:render-forms))
 (in-package :hiccl/render)
 
@@ -14,13 +13,9 @@
 ;; ----------------------------------------------------------------------------
 (defun render-attr (out attr)
   (let ((k (car attr)) (v (cdr attr)))
-    (typecase v
-      (null
-       (format out " ~(~a~)" (sanitize k)))
-      (string
-       (format out " ~(~a~)=\"~a\"" (sanitize k) (sanitize v)))
-      (list
-       (format out " ~(~a~)=\"~{~a~^ ~}\"" (sanitize k) (sanitize v))))))
+    (if v
+        (format out " ~(~a~)=\"~a\"" (sanitize k) (sanitize v))
+        (format out " ~(~a~)" (sanitize k)))))
 
 ;;
 ;; Handle SXML nodes by tag
