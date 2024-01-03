@@ -12,8 +12,7 @@
 
 ;; ----------------------------------------------------------------------------
 (defun render-attr (out attr)
-  (let ((k (car attr))
-        (v (cdr attr)))
+  (let ((k (car attr)) (v (cdr attr)))
     (if v
         (format out " ~(~a~)=\"~a\"" (sanitize k) (sanitize v))
         (format out " ~(~a~)" (sanitize k)))))
@@ -26,11 +25,11 @@
 (defgeneric apply-tag (out tag body)
   ;; Comment special tag
   (:method (out (tag (eql :comment)) body)
-    (format out "<!--~%~{~a~%~}-->" body))
+    (format out "<!-- ~{~a~} -->" body))
 
   ;; Alternative comment tag
   (:method (out (tag (eql :!--)) body)
-    (format out "<!--~%~{~a~%~}-->" body))
+    (format out "<!-- ~{~a~} -->" body))
 
   ;; Doctype special tag
   (:method (out (tag (eql :doctype)) body)
@@ -42,7 +41,7 @@
 
   ;; Raw string
   (:method (out (tag (eql :raw)) body)
-    (format out "~{~a~%~}" body))
+    (format out "~{~a~}" body))
 
   ;; Default strategy
   (:method (out tag body)
@@ -50,10 +49,9 @@
       (multiple-value-bind (tag attrs) (hiccl/expand::expand tag attrs)
         (format out "<~(~a~)" tag)
         (dolist (a attrs) (render-attr out a))
-        (format out ">~%")
-        ;; (format out "<~(~a~)~{ ~a~}>~%" tag (mapcar #'render-attr attrs))
+        (format out ">")
         (dolist (c children) (render-form out c))
-        (format out "</~(~a~)>~%" tag)))))
+        (format out "</~(~a~)>" tag)))))
 
 ;;
 ;; Render one SXML form to output
@@ -66,15 +64,15 @@
 
   ;; Render symbols raw
   (:method (out (sxml symbol))
-    (format out "~a~%" sxml))
+    (format out "~a" sxml))
 
   ;; Render numbers literally
   (:method (out (sxml number))
-    (format out "~a~%" sxml))
+    (format out "~a" sxml))
 
   ;; Render strings escaped
   (:method (out (sxml string))
-    (format out "~a~%" (hiccl/sanitize:sanitize sxml)))
+    (format out "~a" (hiccl/sanitize:sanitize sxml)))
 
   ;; Render lists as XML nodes
   (:method (out (sxml list))
