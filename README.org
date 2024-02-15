@@ -16,6 +16,8 @@ Hiccl exposes one function, `render-forms` and a macro `render` which is simply 
 
 Outputting to `nil` returns a string
 
+NOTE: In the following examples, the HTML has been formatted for the readme.  Hiccl does not pretty print it's output.
+
 #+begin_src lisp :exports both
 (hiccl:render nil
  `(:div :hi "world"
@@ -28,14 +30,12 @@ Outputting to `nil` returns a string
 #+RESULTS:
 #+begin_example
 <div hi="world">
-<span>
-tag can be symbol
-</span>
-no &lt;/&quot;xss&quot;&gt; allowed
-symbols <are> "raw" </are>
-<a href="hTtPs://link.org">
-clickme
-</a>
+  <span>
+    tag can be symbol
+  </span>
+  no &lt;/&quot;xss&quot;&gt; allowed
+  symbols <are> "raw" </are>
+  <a href="hTtPs://link.org">clickme</a>
 </div>
 #+end_example
 
@@ -73,10 +73,8 @@ Render to a stream by specifying the `:out` argument, renders to string by defau
 
 #+RESULTS:
 : <div>
-: hello-component:
-: <span>
-: Hello garlic
-: </span>
+:   hello-component:
+:   <span>Hello garlic</span>
 : </div>
 
 ** Boolean attributes
@@ -107,12 +105,12 @@ The renderer uses generic functions that you can extend to handle your objects:
 
 #+RESULTS:
 : <div class="thing">
-: <div class="a">
-: hi
-: </div>
-: <div class="b">
-: world
-: </div>
+:   <div class="a">
+:     hi
+:     </div>
+:     <div class="b">
+:     world
+:   </div>
 : </div>
 
 You can also add special cases for HTML tags with methods:
