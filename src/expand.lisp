@@ -1,5 +1,6 @@
 (defpackage #:hiccl/expand
-  (:use :cl :binding-arrows)
+  (:use :cl)
+  (:import-from #:binding-arrows :cond->)
   (:import-from #:serapeum :split-sequence-if)
   (:import-from #:trivia :match)
   (:export #:expand))

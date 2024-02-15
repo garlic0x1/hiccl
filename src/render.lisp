@@ -1,7 +1,8 @@
 (defpackage #:hiccl/render
   (:nicknames #:hiccl)
-  (:use :cl :hiccl/utils)
-  (:import-from #:hiccl/sanitize #:sanitize)
+  (:use :cl)
+  (:import-from #:hiccl/sanitize :sanitize)
+  (:import-from #:hiccl/utils :extract-attrs)
   (:export #:render))
 (in-package :hiccl/render)
 

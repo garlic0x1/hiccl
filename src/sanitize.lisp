@@ -1,5 +1,6 @@
 (defpackage #:hiccl/sanitize
-  (:use :cl :serapeum)
+  (:use :cl)
+  (:import-from #:serapeum :escape :defconst)
   (:export #:sanitize))
 (in-package :hiccl/sanitize)
 
