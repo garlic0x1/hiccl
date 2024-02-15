@@ -2,7 +2,7 @@
   (:nicknames #:hiccl)
   (:use :cl :hiccl/utils)
   (:import-from #:hiccl/sanitize #:sanitize)
-  (:export #:render #:render-forms))
+  (:export #:render))
 (in-package :hiccl/render)
 
 ;;
@@ -45,7 +45,7 @@
 
   ;; Default strategy
   (:method (out tag body)
-    (multiple-value-bind (attrs children) (extract-attrs-and-children body)
+    (multiple-value-bind (attrs children) (extract-attrs body)
       (multiple-value-bind (tag attrs) (hiccl/expand::expand tag attrs)
         (format out "<~(~a~)" tag)
         (dolist (a attrs) (render-attr out a))
@@ -79,10 +79,10 @@
     (apply-tag out (car sxml) (cdr sxml))))
 
 ;; ----------------------------------------------------------------------------
-(defun render-forms (output &rest forms)
+(defun render-forms (output forms)
   (if output
       (dolist (f forms) (render-form output f))
-      (with-output-to-string (capture) (apply (curry #'render-forms capture) forms))))
+      (with-output-to-string (capture) (funcall #'render-forms capture forms))))
 
 ;;
 ;; This is the primary exposed utility
@@ -100,4 +100,4 @@
 
 ;; ----------------------------------------------------------------------------
 (defmacro render (output &body forms)
-  `(render-forms ,output ,@forms))
+  `(render-forms ,output (list ,@forms)))

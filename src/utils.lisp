@@ -1,13 +1,10 @@
 (defpackage #:hiccl/utils
   (:use :cl)
-  (:export #:curry #:extract-attrs-and-children))
+  (:export #:extract-attrs))
 (in-package :hiccl/utils)
 
 ;; ----------------------------------------------------------------------------
-(defun curry (f &rest a) (lambda (&rest b) (apply f (nconc a b))))
-
-;; ----------------------------------------------------------------------------
-(defun extract-attrs-and-children (body)
+(defun extract-attrs (body)
   (let* ((attrs (loop :for (k v) :on body :by 'cddr
                       :while (keywordp k)
                       :collect (cons k v)))
