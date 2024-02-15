@@ -17,13 +17,7 @@
     :accessor formatter-out)
    (indent
     :initform 0
-    :accessor formatter-indent)
-   (stack 
-    :initform '()
-    :accessor formatter-stack)
-   (state 
-    :initform :base
-    :accessor formatter-state)))
+    :accessor formatter-indent)))
 
 (defmethod print-indent ((obj formatter))
   (dotimes (_i (formatter-indent obj))
