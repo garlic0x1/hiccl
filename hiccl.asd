@@ -1,5 +1,5 @@
 (asdf:defsystem "hiccl"
-  :description "Hiccup HTML generator for Common Lisp"
+  :description "HTML generator for Common Lisp"
   :version "1.0"
   :author "garlic0x1"
   :license "MIT"

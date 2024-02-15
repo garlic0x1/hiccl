@@ -1,6 +1,6 @@
 #+title: Readme
 
-Hiccup HTML generator for Common Lisp
+HTML generator for Common Lisp
 
 * Purpose
 Spinneret is great but having to use macros to compose elements is less intuitive than simply having a function to render S-Expressions into HTML.
@@ -8,13 +8,13 @@ Spinneret is great but having to use macros to compose elements is less intuitiv
 Hiccl also aims to be easy to extend with generic functions.
 
 * Usage
-Hiccl exposes one function, `render-forms` and a macro `render` which is simply to use &body args for nicer editor support, they take an output argument (same as format) and any number of SXML expressions
+Hiccl exposes one macro, `render`, which wraps `render-forms` to use &body args for editor support.  It takes an output argument (same as format) and any number of SXML expressions.
 
 - Symbols are raw (you can write literal HTML between `|` symbols)
 - Strings are sanitized
 - Lists are HTML nodes
 
-Outputting to `nil` returns a string
+Outputting to `nil` returns a string.
 
 NOTE: In the following examples, the HTML has been formatted for the readme.  Hiccl does not pretty print it's output.
 
@@ -50,7 +50,7 @@ class and id tags can use the following shorthand notation:
 : <div class="c3 c1 c2" id="id2 id1">
 : </div>
 
-Order is not guarunteed at the moment, but I will consider adding it
+Order is not guarunteed at the moment, but I will consider adding it.
 
 ** Specifying output
 Render to a stream by specifying the `:out` argument, renders to string by default
@@ -127,4 +127,4 @@ You can also add special cases for HTML tags with methods:
 : hi
 : -->
 
-These are not exported, so remember to use hiccl::* to refer to them
+These are not exported, so remember to use hiccl::* to refer to them.
