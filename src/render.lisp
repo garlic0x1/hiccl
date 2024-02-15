@@ -38,7 +38,7 @@
 
   ;; Dummy tag (emits children in sequence)
   (:method (out (tag (eql :<>)) body)
-    (dolist (c body) (render-form out c)))
+    (render-forms out body))
 
   ;; Raw string
   (:method (out (tag (eql :raw)) body)
@@ -51,7 +51,7 @@
         (format out "<~(~a~)" tag)
         (dolist (a attrs) (render-attr out a))
         (format out ">")
-        (dolist (c children) (render-form out c))
+        (render-forms out children)
         (format out "</~(~a~)>" tag)))))
 
 ;;
