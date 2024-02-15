@@ -1,6 +1,6 @@
 (asdf:defsystem "hiccl"
-  :description "Hiccup for Common Lisp"
-  :version "0.1"
+  :description "Hiccup HTML generator for Common Lisp"
+  :version "1.0"
   :author "garlic0x1"
   :license "MIT"
   :depends-on (:serapeum :trivia :str)
