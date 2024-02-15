@@ -107,8 +107,8 @@ The renderer uses generic functions that you can extend to handle your objects:
 : <div class="thing">
 :   <div class="a">
 :     hi
-:     </div>
-:     <div class="b">
+:   </div>
+:   <div class="b">
 :     world
 :   </div>
 : </div>
