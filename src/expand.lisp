@@ -1,6 +1,5 @@
 (defpackage #:hiccl/expand
   (:use :cl)
-  (:import-from #:binding-arrows :cond->)
   (:import-from #:serapeum :split-sequence-if)
   (:import-from #:trivia :match)
   (:export #:expand))
@@ -53,9 +52,8 @@
 
 ;; ----------------------------------------------------------------------------
 (defun prepare-attrs (attrs class id)
-  (cond-> attrs
-    (class (ensure-has :class))
-    (id (ensure-has :id))))
+  (let ((attrs (if class (ensure-has attrs :class) attrs)))
+    (if id (ensure-has attrs :id) attrs)))
 
 ;; ----------------------------------------------------------------------------
 (defun expand (tag attrs)
