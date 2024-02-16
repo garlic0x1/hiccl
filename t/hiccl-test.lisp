@@ -112,9 +112,10 @@
     (is (equal "v2" (assoc-value attrs :k2))))
 
   (multiple-value-bind (attrs children)
-      (hiccl/utils:extract-attrs '(:k))
+      (hiccl/utils:extract-attrs '(:k nil :c))
     (is (equal nil (assoc-value attrs :k)))
-    (is (= 1 (length attrs)))))
+    (is (= 1 (length attrs)))
+    (is (= 1 (length children)))))
 
 ;;
 ;; AI generated tests below
