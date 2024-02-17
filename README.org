@@ -53,7 +53,7 @@ class and id tags can use the following shorthand notation:
 Order is not guarunteed at the moment, but I will consider adding it.
 
 ** Specifying output
-Render to a stream by specifying the `out` argument, renders to string by if nil.
+Render to a stream by specifying the `out` argument, renders to string if nil.
 
 #+begin_src lisp
 (hiccl:render *standard-output* sxml)
