@@ -1,7 +1,11 @@
+# IDE
 .DS_Store
 .idea
 *.log
 tmp/
+*.dev
+*~
+*#*
 
 # SBCL
 *.fasl
