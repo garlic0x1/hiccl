@@ -9,12 +9,15 @@
 
 (deftest attributes ()
   "Ensure attributes and JSX shorthand work"
-  (let ((basic-attrs (plump:parse (hiccl:render nil '(:div :hi "world"))))
-        (macro-attrs (plump:parse (hiccl:render nil '(:div.class1.class2#id1.class3 :id "id2" "text"))))
-        (bool-attrs (hiccl:render nil '(:div :bool1 nil :bool2 nil "hi"))))
+  (let ((basic-attrs
+          (plump:parse (hiccl:render nil '(:div :hi "world"))))
+        (macro-attrs
+          (plump:parse (hiccl:render nil '(:div.class1.class2#id1.class3 :id "id2" "text"))))
+        (bool-attrs
+          (hiccl:render nil '(:div :bool1 nil :bool2 nil "hi"))))
     (is (string= "world" (alexandria:first-elt (lquery:$ basic-attrs "div" (attr :hi)))))
-    (is (string-equal " class1 class2 class3" (alexandria:first-elt (lquery:$ macro-attrs "div" (attr :class)))))
     (is (string-equal "id2id1" (alexandria:first-elt (lquery:$ macro-attrs "div" (attr :id)))))
+    (is (string-equal " class1 class2 class3" (alexandria:first-elt (lquery:$ macro-attrs "div" (attr :class)))))
     ;; bool attrs
     (is (string= "<DIV BOOL1 BOOL2>hi</DIV>" bool-attrs))))
 
@@ -30,7 +33,8 @@
   "Ensure at least some level of sanitization happens"
   (is (string= "<DIV>&lt;&gt;</DIV>" (hiccl:render nil '(:div "<>"))))
   (is (string= "<DIV>&#39;&quot;</DIV>" (hiccl:render nil '(:div "'\""))))
-  (is (string= "<DIV AT&lt;&gt;R=\"&lt;&gt;\">&#39;&quot;</DIV>" (hiccl:render nil '(:div :at<>r "<>" "'\"")))))
+  (is (string= "<DIV AT&lt;&gt;R=\"&lt;&gt;\">&#39;&quot;</DIV>"
+               (hiccl:render nil '(:div :at<>r "<>" "'\"")))))
 
 (defstruct user username email)
 (defmethod hiccl::render-form (out (obj user))
@@ -68,7 +72,8 @@
     (is (= 1 (length children)))))
 
 (deftest empty-tag ()
-  (is (equal "<IMG SRC=\"image.jpg\" ALT=\"\"></IMG>" (hiccl:render nil '(:img :src "image.jpg" :alt "")))))
+  (is (equal "<IMG SRC=\"image.jpg\" ALT=\"\"></IMG>"
+             (hiccl:render nil '(:img :src "image.jpg" :alt "")))))
 
 (deftest html5-doctype ()
   (is (string=
