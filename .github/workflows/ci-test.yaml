@@ -15,5 +15,6 @@ jobs:
           sbcl --disable-debugger \
                --load /root/quicklisp/setup.lisp \
                --load hiccl.asd \
+               --eval '(ql:quickload :hiccl/test)' \
                --eval '(asdf:test-system :hiccl)' \
                --eval '(quit)'
