@@ -13,7 +13,7 @@ jobs:
         run: |
           set -ex
           sbcl --disable-debugger \
+               --load /root/quicklisp/setup.lisp \
                --load hiccl.asd \
-               --eval '(require :asdf)'
                --eval '(asdf:test-system :hiccl)' \
                --eval '(quit)'
