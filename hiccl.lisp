@@ -72,10 +72,10 @@
 
 (defgeneric apply-tag (out tag body)
   (:method (out (tag (eql :comment)) body) (format out "<!-- ~{~a~} -->" body))
-  (:method (out (tag (eql :!--)) body) (format out "<!-- ~{~a~} -->" body))
+  (:method (out (tag (eql :!--)) body)     (format out "<!-- ~{~a~} -->" body))
   (:method (out (tag (eql :doctype)) body) (format out "<!DOCTYPE~{ ~a~}>" body))
-  (:method (out (tag (eql :<>)) body) (render-forms out body))
-  (:method (out (tag (eql :raw)) body) (format out "~{~a~}" body))
+  (:method (out (tag (eql :raw)) body)     (format out "~{~a~}" body))
+  (:method (out (tag (eql :<>)) body)      (render-forms out body))
   (:method (out tag body)
     (multiple-value-bind (attrs children) (extract-attrs body)
       (multiple-value-bind (tag attrs) (expand tag attrs)
@@ -86,11 +86,11 @@
         (format out "</~a>" tag)))))
 
 (defgeneric render-form (out sxml)
-  (:method (out (sxml null)) nil)                                  ; don't render NIL
+  (:method (out (sxml null))   nil)                                ; don't render NIL
   (:method (out (sxml symbol)) (format out "~a" sxml))             ; render symbols raw
   (:method (out (sxml string)) (write-string (sanitize sxml) out)) ; sanitize strings
   (:method (out (sxml number)) (format out "~a" sxml))
-  (:method (out (sxml list)) (apply-tag out (car sxml) (cdr sxml))))
+  (:method (out (sxml list))   (apply-tag out (car sxml) (cdr sxml))))
 
 (defun render-forms (output forms)
   (if output
