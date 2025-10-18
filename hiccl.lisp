@@ -51,40 +51,31 @@
         :finally (return (values tag (if classp class nil) (if idp id nil)))))
 
 (defun prepare-attrs (attrs class id)
-  (flet ((ensure-key-exists (alist key)
-           (if (assoc key alist) alist (cons (cons key nil) alist))))
+  (flet ((ensure-key-exists (alist key) (if (assoc key alist) alist (cons (cons key nil) alist))))
     (let ((attrs (if class (ensure-key-exists attrs :class) attrs)))
       (if id (ensure-key-exists attrs :id) attrs))))
 
 (defun expand (tag attrs)
   (multiple-value-bind (tag class id) (expand-tag (string tag))
-    (values
-     tag
-     (loop :for (k . v) :in (prepare-attrs attrs class id)
-           :collect (cons k (case k
-                              ((:class) (concatenate 'string v class))
-                              ((:id) (concatenate 'string v id))
-                              (otherwise v)))))))
+    (values tag
+            (loop :for (k . v) :in (prepare-attrs attrs class id)
+                  :collect (cons k (case k
+                                     ((:class) (concatenate 'string v class))
+                                     ((:id) (concatenate 'string v id))
+                                     (otherwise v)))))))
 
 (defun render-attr (out attr)
-  "Render HTML attributes, null values treated as boolean attributes."
   (let ((k (car attr)) (v (cdr attr)))
     (if v
         (format out " ~a=\"~a\"" (sanitize k) (sanitize v))
         (format out " ~a" (sanitize k)))))
 
 (defgeneric apply-tag (out tag body)
-  ;; Comment special tag
   (:method (out (tag (eql :comment)) body) (format out "<!-- ~{~a~} -->" body))
-  ;; Alternative comment tag
   (:method (out (tag (eql :!--)) body) (format out "<!-- ~{~a~} -->" body))
-  ;; Doctype special tag
   (:method (out (tag (eql :doctype)) body) (format out "<!DOCTYPE~{ ~a~}>" body))
-  ;; Dummy tag (emits children in sequence)
   (:method (out (tag (eql :<>)) body) (render-forms out body))
-  ;; Raw string
   (:method (out (tag (eql :raw)) body) (format out "~{~a~}" body))
-  ;; Default strategy
   (:method (out tag body)
     (multiple-value-bind (attrs children) (extract-attrs body)
       (multiple-value-bind (tag attrs) (expand tag attrs)
@@ -95,15 +86,10 @@
         (format out "</~a>" tag)))))
 
 (defgeneric render-form (out sxml)
-  ;; Dont render nil
-  (:method (out (sxml null)) nil)
-  ;; Render symbols raw
-  (:method (out (sxml symbol)) (format out "~a" sxml))
-  ;; Render numbers literally
+  (:method (out (sxml null)) nil)                                  ; don't render NIL
+  (:method (out (sxml symbol)) (format out "~a" sxml))             ; render symbols raw
+  (:method (out (sxml string)) (write-string (sanitize sxml) out)) ; sanitize strings
   (:method (out (sxml number)) (format out "~a" sxml))
-  ;; Render strings escaped
-  (:method (out (sxml string)) (write-string (sanitize sxml) out))
-  ;; Render lists as XML nodes
   (:method (out (sxml list)) (apply-tag out (car sxml) (cdr sxml))))
 
 (defun render-forms (output forms)
@@ -111,5 +97,4 @@
       (dolist (f forms) (render-form output f))
       (with-output-to-string (capture) (funcall #'render-forms capture forms))))
 
-(defmacro render (output &body forms)
-  `(render-forms ,output (list ,@forms)))
+(defmacro render (output &body forms) `(render-forms ,output (list ,@forms)))
