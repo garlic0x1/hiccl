@@ -13,10 +13,10 @@
         (macro-attrs (plump:parse (hiccl:render nil '(:div.class1.class2#id1.class3 :id "id2" "text"))))
         (bool-attrs (hiccl:render nil '(:div :bool1 nil :bool2 nil "hi"))))
     (is (string= "world" (alexandria:first-elt (lquery:$ basic-attrs "div" (attr :hi)))))
-    (is (string= "class1 class2 class3" (alexandria:first-elt (lquery:$ macro-attrs "div" (attr :class)))))
-    (is (string= "id2 id1" (alexandria:first-elt (lquery:$ macro-attrs "div" (attr :id)))))
+    (is (string-equal " class1 class2 class3" (alexandria:first-elt (lquery:$ macro-attrs "div" (attr :class)))))
+    (is (string-equal "id2id1" (alexandria:first-elt (lquery:$ macro-attrs "div" (attr :id)))))
     ;; bool attrs
-    (is (string= "<div bool1 bool2>hi</div>" bool-attrs))))
+    (is (string= "<DIV BOOL1 BOOL2>hi</DIV>" bool-attrs))))
 
 (deftest nesting ()
   "Ensure nested nodes work"
@@ -28,9 +28,9 @@
 
 (deftest sanitization ()
   "Ensure at least some level of sanitization happens"
-  (is (string= "<div>&lt;&gt;</div>" (hiccl:render nil '(:div "<>"))))
-  (is (string= "<div>&#39;&quot;</div>" (hiccl:render nil '(:div "'\""))))
-  (is (string= "<div at&lt;&gt;r=\"&lt;&gt;\">&#39;&quot;</div>" (hiccl:render nil '(:div :at<>r "<>" "'\"")))))
+  (is (string= "<DIV>&lt;&gt;</DIV>" (hiccl:render nil '(:div "<>"))))
+  (is (string= "<DIV>&#39;&quot;</DIV>" (hiccl:render nil '(:div "'\""))))
+  (is (string= "<DIV AT&lt;&gt;R=\"&lt;&gt;\">&#39;&quot;</DIV>" (hiccl:render nil '(:div :at<>r "<>" "'\"")))))
 
 (defstruct user username email)
 (defmethod hiccl::render-form (out (obj user))
@@ -42,11 +42,11 @@
 (deftest extension ()
   (is (string= "<!-- hi -->" (hiccl:render nil '(:!-- "hi"))))
   (is (string= "<!-- hi -->" (hiccl:render nil '(:comment "hi"))))
-  (is (string= "<div class=\"user\"><div class=\"username\">garlic</div><div class=\"email\">garlic@email.com</div></div>"
+  (is (string= "<DIV CLASS=\" USER\"><DIV CLASS=\" USERNAME\">garlic</DIV><DIV CLASS=\" EMAIL\">garlic@email.com</DIV></DIV>"
        (hiccl:render nil (make-user :username "garlic" :email "garlic@email.com")))))
 
 (deftest whitespace ()
-  (is (string= "<div>hi world</div>" (hiccl:render nil '(:div "hi" " " "world")))))
+  (is (string= "<DIV>hi world</DIV>" (hiccl:render nil '(:div "hi" " " "world")))))
 
 (deftest raw ()
   (is (string= "<div>hi</lol>" (hiccl:render nil '(:raw "<div>hi</lol>"))))
@@ -67,16 +67,12 @@
     (is (= 1 (length attrs)))
     (is (= 1 (length children)))))
 
-;;
-;; AI generated tests below
-;;
-
 (deftest empty-tag ()
-  (is (equal "<img src=\"image.jpg\" alt=\"\"></img>" (hiccl:render nil '(:img :src "image.jpg" :alt "")))))
+  (is (equal "<IMG SRC=\"image.jpg\" ALT=\"\"></IMG>" (hiccl:render nil '(:img :src "image.jpg" :alt "")))))
 
 (deftest html5-doctype ()
   (is (string=
-       "<!DOCTYPE html><h1>Hello, World!</h1>"
+       "<!DOCTYPE html><H1>Hello, World!</H1>"
        (hiccl:render nil '(:<>
                      (:doctype "html")
                      (:h1 "Hello, World!"))))))

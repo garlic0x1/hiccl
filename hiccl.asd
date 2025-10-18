@@ -3,7 +3,6 @@
   :version "2.0"
   :author "garlic0x1"
   :license "MIT"
-  :depends-on ("serapeum")
   :components ((:file "hiccl"))
   :in-order-to ((test-op (test-op "hiccl/test"))))
 
