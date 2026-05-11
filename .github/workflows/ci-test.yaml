@@ -1,0 +1,21 @@
+name: ci-test
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: bdockerimg/quicklisp
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Run Tests
+        run: |
+          set -ex
+          sbcl --disable-debugger \
+               --load /root/quicklisp/setup.lisp \
+               --eval '(ql:update-all-dists :prompt nil)' \
+               --load hiccl.asd \
+               --eval '(ql:quickload :hiccl/test)' \
+               --eval '(asdf:test-system :hiccl)' \
+               --eval '(quit)'
